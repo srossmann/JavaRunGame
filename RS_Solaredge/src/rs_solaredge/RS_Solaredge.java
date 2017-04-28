@@ -87,16 +87,10 @@ public class RS_Solaredge {
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 HoleModbusDaten(Modbus);
-
                 System.out.println(formatter.format(new Date()) + " Leistung " + P_AC_Watt + " ");
                 byte b[] = SerialConnection.Reg.buffer;
-                try {
-                    lcd.writeln(LCD_ROW_2, formatter.format(new Date()), LCDTextAlignment.ALIGN_CENTER);
-                    lcd.writeln(LCD_ROW_4, String.format("PV %4.0f Watt", P_AC_Watt));
-                    //lcd.writeln(LCD_ROW_4, String.format("PL %1$4.0f Watt %2$d", P_AC_Watt, Anzahl));
-                } catch (Exception ex) {
-                    System.out.println("MQTT_exception: " + ex.getMessage());
-                }
+                lcd.writeln(LCD_ROW_2, formatter.format(new Date()), LCDTextAlignment.ALIGN_CENTER);
+                lcd.writeln(LCD_ROW_4, String.format("PV %4.0f Watt", P_AC_Watt));
             }
         };
         timer = new Timer(Zyklus * 1000, actionListener);
@@ -105,10 +99,17 @@ public class RS_Solaredge {
 
     private static void SetObject(String ID, String Value) {
         try {
+            if (!Mqtt.isConnected()) {
+                MqttConnectOptions connOpts = new MqttConnectOptions();
+                connOpts.setCleanSession(true);
+                Mqtt.connect(connOpts);
+            }
             MqttMessage message = new MqttMessage(Value.getBytes());
             message.setQos(0);
             Mqtt.publish(ID, message);
+            lcd.writeln(LCD_ROW_3, "                    ");
         } catch (MqttException ex) {
+            lcd.writeln(LCD_ROW_3, ex.getMessage());
             System.out.println("MQTT_exception: " + ex.getMessage());
         }
     }
@@ -143,5 +144,4 @@ public class RS_Solaredge {
         lcd.writeln(LCD_ROW_2, formatter.format(new Date()), LCDTextAlignment.ALIGN_CENTER);
     }
 
-    
 }
