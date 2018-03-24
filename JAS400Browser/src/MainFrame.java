@@ -13,7 +13,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -1292,6 +1296,22 @@ public class MainFrame extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
+                    String Version;
+                    try {
+                        Version = UpdateInfo.getLatestVersion();
+                        
+                        if (Integer.parseInt(Version) > 1) {
+                           UpdateInfo.downloadFile();
+                           System.exit(0);
+                        }
+                        
+                        
+                        
+                        String s = Version;
+                    } catch (Exception ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
                     MainFrame frame = new MainFrame();
                     frame.dispose();
 
@@ -1311,6 +1331,16 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
     }
+//******************************************************************************
+//
+//
+//
+//******************************************************************************
+    
+    
+    
+   
+    
 //******************************************************************************
 //
 //
