@@ -79,18 +79,25 @@ public class MainFrame extends javax.swing.JFrame {
     String SelectText = "";
 
     public AS400 myAS400 = null;
+    
+    int Versionsnummer = 0;
 
 //******************************************************************************
 //  Erzeugt ein neues MainFrame
 //
 //
 //******************************************************************************
-    public MainFrame() {
+    public MainFrame(int Versio) {
+        Versionsnummer = Versio;
         initComponents();
         myMainFrame = this;
         JTableHeader header = jTable2.getTableHeader();
         header.addMouseListener(new TableHeaderMouseListenerChecket(jTable2));
 
+        String s = String.valueOf(Versio);
+        
+        jMenueVersion.setText("Version "+s);
+        
         LadeParametrer();
 
     }
@@ -140,6 +147,7 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDialog1 = new javax.swing.JDialog();
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
@@ -179,6 +187,18 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenu1 = new javax.swing.JMenu();
+        jMenueVersion = new javax.swing.JMenu();
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("AS400 Browser for the Arbeitserleichterung ");
@@ -608,6 +628,7 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/connect.png"))); // NOI18N
         jMenu2.setText("Logout");
         jMenu2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jMenu2.setPreferredSize(new java.awt.Dimension(150, 48));
         jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jMenu2MouseClicked(evt);
@@ -617,6 +638,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/info.png"))); // NOI18N
         jMenu1.setText("Info");
+        jMenu1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jMenu1.setPreferredSize(new java.awt.Dimension(150, 48));
         jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jMenu1MouseClicked(evt);
@@ -628,6 +651,18 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         jMenuBar1.add(jMenu1);
+
+        jMenueVersion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/ahmad hania logo.png"))); // NOI18N
+        jMenueVersion.setText("Version X");
+        jMenueVersion.setFocusCycleRoot(true);
+        jMenueVersion.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jMenueVersion.setPreferredSize(new java.awt.Dimension(150, 48));
+        jMenueVersion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenueVersionActionPerformed(evt);
+            }
+        });
+        jMenuBar1.add(jMenueVersion);
 
         setJMenuBar(jMenuBar1);
 
@@ -795,6 +830,7 @@ public class MainFrame extends javax.swing.JFrame {
             StartSchema();
         } else {
             dispose();
+            System.exit(0);
 
         }
 
@@ -846,8 +882,9 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         AS400Schemaname = jTextField2.getText();
-        AS400Tabellenname = jTextField3.getText();
+        String lAS400Tabellenname = jTextField3.getText();
         findSchema(AS400Schemaname);
+        AS400Tabellenname = lAS400Tabellenname;
         findTable(AS400Tabellenname);        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -862,8 +899,16 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jTextField3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyPressed
         if (evt.getKeyCode() == 10) {
-            AS400Tabellenname = jTextField3.getText();
-            findTable(AS400Tabellenname);          // TODO add your handling code here:
+            AS400Schemaname = jTextField2.getText();
+            String lAS400Tabellenname = jTextField3.getText();
+            findSchema(AS400Schemaname);
+            AS400Tabellenname = lAS400Tabellenname;
+            findTable(AS400Tabellenname);        // TODO add your handling code here:
+
+            
+//            AS400Schemaname = jTextField2.getText();
+//            AS400Tabellenname = jTextField3.getText();
+//            findTable(AS400Tabellenname);          // TODO add your handling code here:
         }
     }//GEN-LAST:event_jTextField3KeyPressed
 
@@ -915,6 +960,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void btnEditTabelleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditTabelleActionPerformed
+        btnEditTabelle.requestFocus();
         setEditModus();
     }//GEN-LAST:event_btnEditTabelleActionPerformed
 
@@ -949,6 +995,12 @@ public class MainFrame extends javax.swing.JFrame {
         myAS400.druckeMember(mbr.member);
 
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jMenueVersionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenueVersionActionPerformed
+
+        
+        
+    }//GEN-LAST:event_jMenueVersionActionPerformed
 
 //******************************************************************************
 //
@@ -1285,6 +1337,8 @@ public class MainFrame extends javax.swing.JFrame {
 //                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 //        }
         //</editor-fold>
+        
+        int Versionsnummer = 2;
 
         final SplashJFrame f1 = new SplashJFrame();
         f1.dispose();
@@ -1299,10 +1353,14 @@ public class MainFrame extends javax.swing.JFrame {
                     String Version;
                     try {
                         Version = UpdateInfo.getLatestVersion();
-                        
-                        if (Integer.parseInt(Version) > 1) {
-                           UpdateInfo.downloadFile();
-                           System.exit(0);
+                        if (Integer.parseInt(Version) > Versionsnummer) {
+                           UpdateDialog UpdateDlg = new UpdateDialog(null, true);
+                           UpdateDlg.setVisible(true);
+                            if (UpdateDlg.Result == "J") {
+                               UpdateInfo.downloadFile();
+                               UpdateInfo.launch();
+                            }
+                           UpdateDlg.dispose();
                         }
                         
                         
@@ -1312,7 +1370,7 @@ public class MainFrame extends javax.swing.JFrame {
                         Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
-                    MainFrame frame = new MainFrame();
+                    MainFrame frame = new MainFrame(Versionsnummer);
                     frame.dispose();
 
                     Thread.sleep(3000);
@@ -1677,6 +1735,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton8;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1684,6 +1743,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenueVersion;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;

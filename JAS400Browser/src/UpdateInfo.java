@@ -26,7 +26,6 @@ public class UpdateInfo {
     private final static String root = "update/";
 
     private final static String versionURL = "http://update.rossmann-software.de/version.html";
-    private final static String historyURL = "http://update.rossmann-software.de/history.html";
 
     public static String getLatestVersion() throws Exception {
         String data = getData(versionURL);
@@ -34,7 +33,7 @@ public class UpdateInfo {
     }
 
     public static String getWhatsNew() throws Exception {
-        String data = getData(historyURL);
+        String data = getData(versionURL);
         return data.substring(data.indexOf("[history]") + 9, data.indexOf("[/history]"));
     }
 
@@ -58,29 +57,13 @@ public class UpdateInfo {
 
     public static void downloadFile() {
         try {
-            String link = getDownloadLinkFromHost();
+            String link = "http://update.rossmann-software.de/JABUpdate.jar";
             URL url = new URL(link);
             URLConnection conn = url.openConnection();
             InputStream is = conn.getInputStream();
             long max = conn.getContentLength();
-            
-//            File theDir = new File("test");
-//            
-//            if (!theDir.exists()) {
-//                boolean result = false;
-//                
-//                try {
-//                    theDir.mkdir();
-//                    result = true;
-//                } catch (SecurityException se) {
-//                    //handle it
-//                }
-//                if (result) {
-//                }
-//            }
-
             // outText.setText(outText.getText()+"\n"+"Downloding file...\nUpdate Size(compressed): "+max+" Bytes");
-            BufferedOutputStream fOut = new BufferedOutputStream(new FileOutputStream(new File("update.zip")));
+            BufferedOutputStream fOut = new BufferedOutputStream(new FileOutputStream(new File("JABUpdate.jar")));
             byte[] buffer = new byte[32 * 1024];
             int bytesRead = 0;
             int in = 0;
@@ -92,7 +75,7 @@ public class UpdateInfo {
             fOut.close();
             is.close();
             //outText.setText(outText.getText()+"\nDownload Complete!");
-            unzip();
+           
         } catch (IOException ex) {
             Logger.getLogger(UpdateInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -117,9 +100,9 @@ public class UpdateInfo {
         return buffer.substring(buffer.indexOf("[url]") + 5, buffer.indexOf("[/url]"));
     }
 
-    private static void launch()
+    public static void launch()
     {
-        String[] run = {"java","-jar","update app.jar"};
+        String[] run = {"java","-jar","JABUpdate.jar"};
         try {
             Runtime.getRuntime().exec(run);
         } catch (Exception ex) {
@@ -127,6 +110,9 @@ public class UpdateInfo {
         }
         System.exit(0);
     }
+    
+    
+    
     private static void cleanup()
     {
         //outText.setText(outText.getText()+"\nPreforming clean up...");
